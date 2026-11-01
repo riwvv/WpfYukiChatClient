@@ -1,0 +1,83 @@
+﻿<Window x:Class="WpfYukiChatClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfYukiChatClient"
+        xmlns:vm="clr-namespace:WpfYukiChatClient.ViewModels"
+        xmlns:converters="clr-namespace:WpfYukiChatClient.Converters"
+        xmlns:behaviors="clr-namespace:WpfYukiChatClient.Behaviors"
+        mc:Ignorable="d"
+        Title="YukiChat" Height="750" Width="1200"
+        MinHeight="500" MinWidth="700">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    
+    <Window.Resources>
+        <converters:KeyEventArgsToKeyConverter x:Key="KeyEventArgsToKeyConverter"/>
+        <converters:ConnectIndicatorConverter x:Key="ConnectIndicatorConverter" ConnectBrush="{StaticResource Brush6}" DisconnectBrush="{StaticResource Brush4}"/>
+    </Window.Resources>
+
+    <Grid Style="{StaticResource MainGridStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Rectangle Fill="{StaticResource ScreenLineBrush}" Stroke="{StaticResource Brush6}" Grid.RowSpan="3"/>
+
+        <Label Style="{StaticResource LbTitleStyle}" Content="Yuki Chat"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Label Content="Ваш имя: " FontSize="22" VerticalAlignment="Center" Margin="0" Style="{StaticResource LbClueStyle}"/>
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding HasChangeUsername}" Style="{StaticResource TbUsernameStyle}"/>
+            </StackPanel>
+            <Button Grid.Column="2" Style="{StaticResource BtnStyle}" Command="{Binding ConnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Подключение"/>
+                    <Ellipse Width="10" Height="10" Fill="{Binding IsConnected, Converter={StaticResource ConnectIndicatorConverter}}" Margin="10 0 0 0"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Path Stroke="{StaticResource Brush5}" StrokeThickness="2" Stretch="Fill" Margin="0 50 0 0" Data="M 0 0 L 1 0">
+            <Path.Effect>
+                <DropShadowEffect Color="{StaticResource Color6}" BlurRadius="35" ShadowDepth="0"/>
+            </Path.Effect>
+        </Path>
+
+        <ListBox Grid.Row="1" 
+                 Style="{StaticResource LbChatStyle}"
+                 ItemContainerStyle="{StaticResource ChatItemStyle}"
+                 ItemsPanel="{StaticResource ChatItemsPanel}"
+                 ItemTemplateSelector="{StaticResource MyMessageTemplateSelector}"
+                 ItemsSource="{Binding Messages}" SelectionChanged="ListBox_SelectionChanged">
+            <i:Interaction.Behaviors>
+                <behaviors:AutoScrollToBottomBehavior/>
+            </i:Interaction.Behaviors>
+        </ListBox>
+
+        <StackPanel Margin="15 5" Grid.Row="2">
+            <TextBox Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" 
+                     AcceptsReturn="True"
+                     IsEnabled="{Binding IsConnected}"
+                     Style="{StaticResource TbStyle}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyDown">
+                        <i:InvokeCommandAction Command="{Binding GetInputMessageCommand}" EventArgsConverter="{StaticResource KeyEventArgsToKeyConverter}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+
+            <Label Style="{StaticResource LbClueStyle}"/>
+        </StackPanel>
+    </Grid>
+</Window>
