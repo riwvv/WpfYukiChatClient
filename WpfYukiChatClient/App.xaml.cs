@@ -1,12 +1,7 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
-namespace WpfYukiChatClient {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application {
-    }
+namespace WpfYukiChatClient; 
 
+public partial class App : Application {
+    public static string Username { get; set; } = string.Empty;
 }

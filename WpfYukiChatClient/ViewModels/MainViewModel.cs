@@ -11,10 +11,7 @@ namespace WpfYukiChatClient.ViewModels;
 
 public partial class MainViewModel : ObservableObject {
     [ObservableProperty]
-    private ObservableCollection<Message> _messages = [
-        new Message { Username = "riwvv", Text = "Привет Юки!" },
-        new Message { Username = "Yuki", Text = "Привет riwvv :)" },
-    ];
+    private ObservableCollection<Message> _messages = [];
 
     [ObservableProperty]
     private string _message = string.Empty;
@@ -31,17 +28,19 @@ public partial class MainViewModel : ObservableObject {
     private HubConnection? _connection;
 
     [RelayCommand]
-    private void GetInputMessage(object parameter) {
+    private async Task GetInputMessage(object parameter) {
         if (parameter is Key key && key == Key.Enter) {
-            if (string.IsNullOrWhiteSpace(Message.Trim()))
+            if (_connection is null || string.IsNullOrWhiteSpace(Message.Trim()) || string.IsNullOrWhiteSpace(Username.Trim()))
                 return;
 
-            Messages.Add(new Message {
-                Username = Username,
-                Text = Message.Trim()
-            });
+            try {
+                await _connection.InvokeAsync("SendMessage", Username, Message);
+                Message = string.Empty;
+            }
+            catch (Exception ex) {
+                Messages.Add(new Message { Username = "System", Text = $"Ошибка подключения: {ex.Message}" });
+            }
 
-            Message = string.Empty;
         }
     }
 
@@ -49,17 +48,19 @@ public partial class MainViewModel : ObservableObject {
     private async Task ConnectAsync() {
         Debug.WriteLine($"{Username} clicked");
         if (!IsConnected) {
-            if (string.IsNullOrWhiteSpace(Username))
+            if (string.IsNullOrWhiteSpace(Username.Trim()))
                 return;
 
+            App.Username = Username;
+
             _connection = new HubConnectionBuilder()
-            .WithUrl("http://yuki.riwvv.ru/chat")
-            .WithAutomaticReconnect()
-            .Build();
+                .WithUrl("http://localhost:5051/chat")
+                .WithAutomaticReconnect()
+                .Build();
 
             _connection.On<string, string>("ReceiveMessage", (user, message) => {
                 Application.Current.Dispatcher.Invoke(() => {
-                    Messages.Add(new Message { Username = user, Text = message });
+                    Messages.Add(new Message { Username = user, Text = message.Trim() });
                 });
             });
 

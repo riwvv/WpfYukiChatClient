@@ -361,4 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/WebTestYukiChatServer/WebTestYukiChatServer.csproj
+
+WebTestYukiChatServer/
+WpfYukiChatClient.slnLaunch.user
