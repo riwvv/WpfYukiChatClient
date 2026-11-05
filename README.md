@@ -1,2 +1,2 @@
 # WpfYukiChatClient
-<img width="1179" height="733" alt="photo_2026-11-02_00-58-54" src="https://github.com/user-attachments/assets/1ac41690-4c39-49cb-aad4-8d655355d7b9" />
+<img width="678" height="485" alt="image" src="https://github.com/user-attachments/assets/bd3c7b9b-aa66-4dc5-b955-12f15405a553" />
