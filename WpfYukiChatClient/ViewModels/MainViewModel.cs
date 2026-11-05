@@ -54,7 +54,7 @@ public partial class MainViewModel : ObservableObject {
             App.Username = Username;
 
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5051/chat")
+                .WithUrl("http://yuki.riwvv.ru/chat")
                 .WithAutomaticReconnect()
                 .Build();
 
