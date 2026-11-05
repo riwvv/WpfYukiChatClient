@@ -1,4 +1,3 @@
 <Solution>
-  <Project Path="WebTestYukiChatServer/WebTestYukiChatServer.csproj" Id="8f2cb64a-1911-4a95-a7a2-7435c226eafd" />
   <Project Path="WpfYukiChatClient/WpfYukiChatClient.csproj" />
 </Solution>
